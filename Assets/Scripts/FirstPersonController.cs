@@ -7,17 +7,13 @@ public class FirstPersonController : MonoBehaviour
 {
     [Header("Movement")]
     public float moveSpeed;
-    // public float groundDrag;
-    // public float jumpForce;
-    // public float jumpCooldown;
-    // public float airMultiplier;
 
     [HideInInspector] public float sprintSpeed;
 
-    [Header("Ground Check")]
-    public float playerHeight;
-    public LayerMask whatIsGround;
-    bool grounded;
+    // [Header("Ground Check")]
+    // public float playerHeight;
+    // public LayerMask whatIsGround;
+    // bool grounded;
 
     public Transform orientation;
 
@@ -28,11 +24,8 @@ public class FirstPersonController : MonoBehaviour
 
     CharacterController characterController;
     public float gravity = -9.81f;
-    // public PlayableDirector Timeline3;
-
     public GameObject Cursor;
-    // public PlayableDirector LastAnim;
-    // public PlayableDirector TimeKey;
+    public Joystick joystick;
 
     private void Start()
     {
@@ -41,10 +34,9 @@ public class FirstPersonController : MonoBehaviour
 
     private void Update()
     {
-        // ground check
-        // grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.3f, whatIsGround);
 
-        bool isSprinting = Input.GetKey(KeyCode.LeftShift);
+
+        bool isSprinting = Input.GetKey(KeyCode.LeftShift) ||(joystick.Horizontal > 0.5f || joystick.Vertical > 0.5f);
         if (isSprinting)
         {
             moveSpeed = 7.5f;
@@ -73,29 +65,25 @@ public class FirstPersonController : MonoBehaviour
 
     private void MyInput()
     {
-        horizontalInput = Input.GetAxisRaw("Horizontal");
-        verticalInput = Input.GetAxisRaw("Vertical");
+        horizontalInput = joystick.Horizontal;
+        verticalInput = joystick.Vertical;
     }
 
     private void MovePlayer()
-{
-    // Calculate movement direction
-    moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
-    moveDirection *= moveSpeed;
-
-    // Check if the player is grounded before moving
-    if (characterController.isGrounded)
     {
-        moveDirection.y = 0f;
-    }
-    else
-    {
-        // Apply gravity
-        moveDirection.y += gravity * Time.deltaTime;
-    }
 
-    // Move the player
-    characterController.Move(moveDirection * Time.deltaTime);
-}
+        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+        moveDirection *= moveSpeed;
+
+
+        characterController.Move(moveDirection * Time.deltaTime);
+    }
+    // public void SetJoystickInput(Vector2 input)
+    // {
+    //     horizontalInput = input.x;
+    //     verticalInput = input.y;
+    //     Debug.Log("move");
+    // }
+
 
 }

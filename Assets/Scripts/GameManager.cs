@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -33,5 +34,9 @@ public class GameManager : MonoBehaviour
     {
         InvPanel.SetActive(false);
         isInventoryOpen = false;
+    }
+    public void ResetGame()
+    {
+        SceneManager.LoadScene(0);
     }
 }
