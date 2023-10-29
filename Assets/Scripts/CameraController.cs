@@ -1,42 +1,27 @@
 using UnityEngine;
-using UnityEngine.Playables;
 
 public class CameraController : MonoBehaviour
 {
-    public Transform orientation;
+    public Transform player;
     public float sensitivity = 2f; // Adjust sensitivity as needed
 
+    private Vector2 inputDirection;
     private float rotationX = 0f;
     private float rotationY = 0f;
-
-    private Vector2 touchStart;
 
     void Update()
     {
         if (!GameManager.instance.isInventoryOpen)
         {
-            if (Input.touchCount == 1)
-            {
-                Touch touch = Input.GetTouch(0);
+            inputDirection = FindObjectOfType<JoystickController>().GetInputDirection();
 
-                if (touch.phase == TouchPhase.Began)
-                {
-                    touchStart = touch.position;
-                    Debug.Log("touched");
-                }
-                else if (touch.phase == TouchPhase.Moved)
-                {
-                    Vector2 delta = touch.position - touchStart;
-                    rotationX -= delta.y * sensitivity;
-                    rotationX = Mathf.Clamp(rotationX, -90f, 90f);
-                    rotationY += delta.x * sensitivity;
+            rotationY += inputDirection.x * sensitivity * Time.deltaTime; // Horizontal rotation
+            rotationX -= inputDirection.y * sensitivity * Time.deltaTime; // Vertical rotation
+            rotationX = Mathf.Clamp(rotationX, -90f, 90f);
 
-                    // Rotate the camera based on the swiping
-                    orientation.rotation = Quaternion.Euler(0, rotationY, 0);
-                    transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
-                    Debug.Log("move");
-                }
-            }
+            transform.localRotation = Quaternion.Euler(rotationX, rotationY, 0);
+
+            player.rotation = Quaternion.Euler(0, rotationY, 0);
         }
     }
 }

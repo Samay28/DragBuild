@@ -10,11 +10,6 @@ public class FirstPersonController : MonoBehaviour
 
     [HideInInspector] public float sprintSpeed;
 
-    // [Header("Ground Check")]
-    // public float playerHeight;
-    // public LayerMask whatIsGround;
-    // bool grounded;
-
     public Transform orientation;
 
     float horizontalInput;
@@ -34,9 +29,7 @@ public class FirstPersonController : MonoBehaviour
 
     private void Update()
     {
-
-
-        bool isSprinting = Input.GetKey(KeyCode.LeftShift) ||(joystick.Horizontal > 0.5f || joystick.Vertical > 0.5f);
+        bool isSprinting = Input.GetKey(KeyCode.LeftShift);
         if (isSprinting)
         {
             moveSpeed = 7.5f;
@@ -60,7 +53,11 @@ public class FirstPersonController : MonoBehaviour
 
     private void FixedUpdate()
     {
-
+        // Calculate frame rate independent gravity
+        float verticalVelocity = moveDirection.y;
+        verticalVelocity += gravity * Time.fixedDeltaTime;
+        moveDirection.y = verticalVelocity;
+        characterController.Move(moveDirection * Time.fixedDeltaTime);
     }
 
     private void MyInput()
@@ -71,19 +68,7 @@ public class FirstPersonController : MonoBehaviour
 
     private void MovePlayer()
     {
-
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
         moveDirection *= moveSpeed;
-
-
-        characterController.Move(moveDirection * Time.deltaTime);
     }
-    // public void SetJoystickInput(Vector2 input)
-    // {
-    //     horizontalInput = input.x;
-    //     verticalInput = input.y;
-    //     Debug.Log("move");
-    // }
-
-
 }
